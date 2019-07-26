@@ -98,7 +98,6 @@ class UI extends React.Component {
       position: 'relative',
       top: '-10px'
     };
-    var numberOfCoords = state.numberofcoords
     if (!state.inputValid) {
       return (<div className="header">
                 <center><h3>Weather Around The Globe</h3></center>
