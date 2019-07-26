@@ -31,3 +31,12 @@
     transform: rotate(360deg);
   }
 }
+
+.header {
+  background-color: rgba(50, 115, 220, 0.3);;
+}
+
+.form {
+  max-width: 500px;
+  margin-left:10px;
+}
