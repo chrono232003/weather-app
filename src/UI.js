@@ -126,7 +126,7 @@ class UI extends React.Component {
               <input type="Number" className="form-control" id="numberInput" aria-describedby="numberInput" placeholder="Enter a Number" min="1" max="20" required/>
               <small id="emailHelp" className="form-text text-muted">Points will be randomly generated and showed on the map</small>
             </div>
-            <button type="submit" className="btn btn-primary" onClick={ this.handleChange }>Get Weather</button>
+            <button type="submit" className="btn btn-primary" onClick={ this.handleChange }>Get Weather Data</button>
           </form>
           <br />
         </div>
