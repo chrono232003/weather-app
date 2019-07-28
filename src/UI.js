@@ -44,35 +44,38 @@ class UI extends React.Component {
         if (this.state.promiseIsResolved === false) {
             console.log("this is the number of coord to loop: " + this.state.numberofcoords)
 
-
-            var coordinatesClassInstance = new GetCoordinates();
-            var coordinateList = coordinatesClassInstance.getRandomLatLongCoords(this.state.numberofcoords);
-            console.log("this is the coord list: " + coordinateList)
-            console.log("this is the coord list length: " + coordinateList.length)
             var coordArr = [];
+            var coordinateList = [];
 
-
-            if (coordinateList.length > 0) {
-            for (var i=0; i < coordinateList.length; i++) {
-              var lat = coordinateList[i][0];
-              var long = coordinateList[i][1]
-              await fetch("http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+long+"&units=imperial&appid=3ec059ce7ec49481a8fdc9217305b06a")
+              await fetch("http://localhost:8080/weatherdata?numberofcoords="+this.state.numberofcoords)
               .then(res => res.json())
               .then((data) => {
-                var coord = {};
-                coord.cityName = (data.name !== "") ? data.name : "(Unknown Location)";
-                coord.weatherDescription = data.weather[0].description;
-                coord.temp = data.main.temp.toFixed(0);
-                coord.pressure = data.main.pressure;
-                coord.humidity = data.main.humidity;
-                coord.windSpeed = data.wind.speed;
-                coord.latitude = data.coord.lat;
-                coord.longitude = data.coord.lon;
-                coordArr.push(coord);
+                console.log("this is the data returned: " + data);
+                for (var i = 0; i<data.length; i++) {
+
+                  var coord = [];
+                  coord.push(data[i].coord.lat)
+                  coord.push(data[i].coord.lon)
+                  coordinateList.push(coord);
+
+                  var coordData = {};
+                  coordData.cityName = (data[i].name !== "") ? data[i].name : "(Unknown Location)";
+                  coordData.weatherDescription = data[i].weather[0].description;
+                  coordData.temp = data[i].main.temp.toFixed(0);
+                  coordData.pressure = data[i].main.pressure;
+                  coordData.humidity = data[i].main.humidity;
+                  coordData.windSpeed = data[i].wind.speed;
+                  coordData.latitude = data[i].coord.lat;
+                  coordData.longitude = data[i].coord.lon;
+                  coordArr.push(coordData);
+                }
               })
 
-              .catch(err => console.log("we have an error: ", err))
-            }
+              //.catch(err => console.log("we have an error: ", err)) {
+              .catch((err) => {
+                console.log("we have an error: ", err)
+                this.setState({err: true})
+              })
 
             this.setState({
                   coordinates: coordinateList,
@@ -80,7 +83,7 @@ class UI extends React.Component {
                  promiseIsResolved:true
               })
           }
-        }
+
       }
 
     componentDidMount() {
@@ -113,6 +116,24 @@ class UI extends React.Component {
                 <br />
               </div>)
     }
+
+    if (state.err) {
+      return (<div className="header">
+                <center><h3>Weather Around The Globe</h3></center>
+                <br/>
+                <form id = "randomCoors" className="form">
+                  <div className="form-group">
+                    <label for="exampleInputEmail1">How many points would you like to look up? (1-20)</label>
+                    <input type="Number" className="form-control" id="numberInput" aria-describedby="numberInput" placeholder="Enter a Number" min="1" max="20" required/>
+                    <small id="emailHelp" className="form-text text-muted">Points will be randomly generated and showed on the map</small>
+                  </div>
+                  <button type="submit" className="btn btn-primary" onClick={ this.handleChange }>Get Weather</button>
+                </form>
+                <br />
+                <h2 color="red">There was an error retreiving data.</h2>
+              </div>)
+    }
+
     if(state.promiseIsResolved) {
     return(
         <div>
